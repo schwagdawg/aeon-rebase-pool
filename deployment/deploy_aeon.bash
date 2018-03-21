@@ -14,7 +14,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -y upgrade
 sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $ROOT_SQL_PASS"
 sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $ROOT_SQL_PASS"
 echo -e "[client]\nuser=root\npassword=$ROOT_SQL_PASS" | sudo tee /root/.my.cnf
-sudo DEBIAN_FRONTEND=noninteractive apt-get -y install git python-virtualenv python3-virtualenv curl ntp build-essential screen cmake pkg-config libboost-all-dev libevent-dev libunbound-dev libminiupnpc-dev libunwind8-dev liblzma-dev libldns-dev libexpat1-dev libgtest-dev mysql-server lmdb-utils libzmq3-dev
+sudo DEBIAN_FRONTEND=noninteractive apt-get -y install git python-virtualenv python3-virtualenv curl ntp build-essential screen cmake pkg-config libboost-all-dev libevent-dev libunbound-dev libminiupnpc-dev libunwind8-dev liblzma-dev libldns-dev libexpat1-dev libgtest-dev mysql-server lmdb-utils libzmq3-dev doxygen graphviz libsodium-dev
 cd ~
 git clone https://github.com/ArqTras/aeon-rebase-pool.git  # Change this depending on how the deployment goes.
 cd /usr/src/gtest
@@ -42,7 +42,7 @@ openssl req -subj "/C=IT/ST=Pool/L=Daemon/O=Mining Pool/CN=mining.pool" -newkey 
 mkdir ~/pool_db/
 sed -r "s/(\"db_storage_path\": ).*/\1\"\/home\/$CURUSER\/pool_db\/\",/" config_example.json > config.json
 cd ~
-git clone https://github.com/ArqTras/pooluiaeon.git
+git clone https://github.com/ArqTras/poolui.git
 cd poolui
 npm install
 ./node_modules/bower/bin/bower update
@@ -63,7 +63,7 @@ sudo chown -R root:www-data /etc/caddy
 sudo mkdir /etc/ssl/caddy
 sudo chown -R www-data:root /etc/ssl/caddy
 sudo chmod 0770 /etc/ssl/caddy
-sudo cp ~/nodejs-pool/deployment/caddyfile /etc/caddy/Caddyfile
+sudo cp ~/aeon-rebase-pool/deployment/caddyfile /etc/caddy/Caddyfile
 sudo chown www-data:www-data /etc/caddy/Caddyfile
 sudo chmod 444 /etc/caddy/Caddyfile
 sudo sh -c "sed 's/ProtectHome=true/ProtectHome=false/' init/linux-systemd/caddy.service > /etc/systemd/system/caddy.service"
@@ -83,7 +83,7 @@ mysql -u root --password=$ROOT_SQL_PASS < deployment/baseaeon.sql
 mysql -u root --password=$ROOT_SQL_PASS pool -e "INSERT INTO pool.config (module, item, item_value, item_type, Item_desc) VALUES ('api', 'authKey', '`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`', 'string', 'Auth key sent with all Websocket frames for validation.')"
 mysql -u root --password=$ROOT_SQL_PASS pool -e "INSERT INTO pool.config (module, item, item_value, item_type, Item_desc) VALUES ('api', 'secKey', '`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`', 'string', 'HMAC key for Passwords.  JWT Secret Key.  Changing this will invalidate all current logins.')"
 pm2 start init.js --name=api --log-date-format="YYYY-MM-DD HH:mm Z" -- --module=api
-bash ~/nodejs-pool/deployment/install_lmdb_tools.sh
-cd ~/nodejs-pool/sql_sync/
+bash ~/aeon-rebase-pool/deployment/install_lmdb_tools.sh
+cd ~/aeon-rebase-pool/sql_sync/
 env PATH=$PATH:`pwd`/.nvm/versions/node/v8.9.3/bin node sql_sync.js
 echo "You're setup!  Please read the rest of the readme for the remainder of your setup and configuration.  These steps include: Setting your Fee Address, Pool Address, Global Domain, and the Mailgun setup!"
