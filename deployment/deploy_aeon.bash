@@ -75,7 +75,7 @@ sudo systemctl start caddy.service
 rm -rf $CADDY_DOWNLOAD_DIR
 cd ~
 sudo env PATH=$PATH:`pwd`/.nvm/versions/node/v8.9.3/bin `pwd`/.nvm/versions/node/v8.9.3/lib/node_modules/pm2/bin/pm2 startup systemd -u $CURUSER --hp `pwd`
-cd ~/nodejs-pool
+cd ~/aeon-rebase-pool
 sudo chown -R $CURUSER. ~/.pm2
 echo "Installing pm2-logrotate in the background!"
 pm2 install pm2-logrotate &
