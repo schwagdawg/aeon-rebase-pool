@@ -24,8 +24,9 @@ sudo mv libg* /usr/lib/
 cd ~
 sudo systemctl enable ntp
 cd /usr/local/src
-sudo git clone -b aeon-rebase-new https://github.com/stoffu/monero.git aeon
+sudo git clone https://github.com/aeonix/aeon.git
 cd aeon
+sudo git checkout v0.11.0.0
 sudo make -j$(nproc)
 sudo cp ~/nodejs-pool/deployment/aeon.service /lib/systemd/system/
 sudo useradd -m aeondaemon -d /home/aeondaemon
